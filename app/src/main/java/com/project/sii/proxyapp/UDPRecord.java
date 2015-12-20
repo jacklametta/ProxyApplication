@@ -1,7 +1,6 @@
 package com.project.sii.proxyapp;
 
 import java.net.DatagramSocket;
-import java.util.Hashtable;
 
 public class UDPRecord extends ProtocolRecord {
 
