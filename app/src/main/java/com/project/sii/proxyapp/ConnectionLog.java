@@ -10,15 +10,15 @@ import java.io.Serializable;
  */
 public class ConnectionLog implements Serializable {
 
-    private Orologio orologio;
+    private CustomClock customClock;
     String to_log="";
 
     public ConnectionLog() {
 
-        orologio = new Orologio();
+        customClock = new CustomClock();
     }
 
-     public void registra(String input){
+     public void doWrite(String input){
         String path = "Ser/log.txt";
         FileWriter fw;
         try {
