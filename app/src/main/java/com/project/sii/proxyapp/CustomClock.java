@@ -3,12 +3,12 @@ package com.project.sii.proxyapp;
 import java.io.Serializable;
 import java.util.GregorianCalendar;
 
-public class Orologio implements Serializable {
+public class CustomClock implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private GregorianCalendar ora;
 
-    public Orologio() {
+    public CustomClock() {
         ora = new GregorianCalendar();
     }
 
@@ -21,21 +21,21 @@ public class Orologio implements Serializable {
 
     public String data()   {
         aggiorna();
-        String ore, min, sec, day, month;
+        String hour, min, sec, day, month;
 
         // Operatori ternari al fine di una miglior formattazione
-        ore   = (get_hour()<10) ? "0"+get_hour() : ""+get_hour();
+        hour   = (get_hour()<10) ? "0"+get_hour() : ""+get_hour();
         min   = (get_min()<10)  ? "0"+get_min() : ""+get_min();
         sec   = (get_sec()<10)  ? "0"+get_sec() : ""+get_sec();
         day   = (get_day()<10)  ? "0"+get_day() : ""+get_day();
         month = (get_month()<10) ? "0"+get_month() : ""+get_month();
 
-        return ore + ":" + min +":" + sec +", " + day + "/" + month + "/" + get_year();
+        return hour + ":" + min +":" + sec +", " + day + "/" + month + "/" + get_year();
     }
     public void aggiorna() { ora = new GregorianCalendar(); }
 
     public static void main(String[] args) {
-        Orologio clock = new Orologio();
+        CustomClock clock = new CustomClock();
 
         for(int i=0; i<120; i++) {
             System.out.println("Log di ADESSO! :  "+clock.data());
