@@ -23,23 +23,16 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public void startService(View v)
+    public void startClicked(View v)
     {
         startService(new Intent(this, VPNGatewayService.class));
+        startService(new Intent(this, MyVPNService.class));
     }
 
-    public void stopService(View v)
+    public void stopClicked(View v)
     {
         stopService(new Intent(this, VPNGatewayService.class));
-    }
-
-    public void onClick(View v) {
-        Intent intent = VpnService.prepare(getApplicationContext());
-        if (intent != null) {
-            startActivityForResult(intent, 0);
-        } else {
-            onActivityResult(0, RESULT_OK, null);
-        }
+        stopService(new Intent(this, MyVPNService.class));
     }
 
     @Override

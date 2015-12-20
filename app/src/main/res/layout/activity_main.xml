@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:text="Avvio VPN"
         android:id="@+id/button"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="startClicked"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -20,7 +21,8 @@
         android:id="@+id/button2"
         android:layout_below="@+id/button"
         android:layout_alignStart="@+id/button"
-        android:layout_marginTop="42dp" />
+        android:layout_marginTop="42dp"
+        android:onClick="stopClicked"/>
 
     <ListView
         android:layout_width="wrap_content"
