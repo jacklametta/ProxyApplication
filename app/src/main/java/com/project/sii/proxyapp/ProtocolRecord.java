@@ -1,39 +1,25 @@
 package com.project.sii.proxyapp;
-import java.net.DatagramSocket;
-import java.util.Hashtable;
+import java.sql.Timestamp;
 
-/**
- * Created by User on 17/12/2015.
- */
 public class ProtocolRecord {
 
-    Hashtable inOut;
-    Hashtable outIn;
+    private static long TTL = 60000L; /* millis */
+    private Timestamp deadline;
 
-    public ProtocolRecord(){
-        if (inOut.isEmpty())
-            inOut = new Hashtable();
-        if (outIn.isEmpty())
-            outIn = new Hashtable();
+    ProtocolRecord(){
+        updateDeadline();
     }
 
-    private void insert(){
-
+    public boolean isValid(){
+        long ts = System.currentTimeMillis();
+        Timestamp actualTs = new Timestamp(ts);
+        return actualTs.before(deadline);
     }
 
-    private void delete(){
-
+    public void updateDeadline(){
+        long ts = System.currentTimeMillis();
+        deadline = new Timestamp(ts + TTL);
     }
 
-    private void search(){
-
-    }
-
-    private Hashtable getInOut(){
-        return inOut;
-    }
-
-    private Hashtable getOutIn(){
-        return outIn;
-    }
 }
+
