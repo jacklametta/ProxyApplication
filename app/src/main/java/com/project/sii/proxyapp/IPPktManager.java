@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 public class IPPktManager {
 
     static final boolean D = true;
-    static final String TAG = "IPPktManager";
+    static final String TAG = "pktManager";
 
     /* Byte Offset in IP header */
     static final int SOURCE_ADDR_OFFSET = 12;
@@ -24,17 +24,17 @@ public class IPPktManager {
     static final int TCP = 6;
     static final int ICMP = 1;
     /* IP Packet */
-    private ByteBuffer ipPkt;
+    private ByteBuffer pkt;
     private int transportProtocol;
 
     public IPPktManager() {
         /* Inserire i campi che sono comuni con gli altri manager*/
     }
 
-    public IPPktManager(ByteBuffer ipPkt) {
-        this.ipPkt = ipPkt;
-        transportProtocol = (int) ipPkt.get(PROTOCOL_OFFSET);
-        payloadOffset = ((int)(ipPkt.get(0) & 0x0f) * 4);
+    public IPPktManager(ByteBuffer pkt) {
+        this.pkt = pkt;
+        transportProtocol = (int) pkt.get(PROTOCOL_OFFSET);
+        payloadOffset = ((int)(pkt.get(0) & 0x0f) * 4);
     }
 
     public int getTransportProtocol(){
@@ -42,11 +42,11 @@ public class IPPktManager {
     }
 
     public ByteBuffer getPayload() throws UnknownHostException {
-        return getBytesFromPkt(payloadOffset, ipPkt.limit() - payloadOffset );
+        return getBytesFromPkt(payloadOffset, pkt.limit() - payloadOffset );
     }
 
     public ByteBuffer getTransportPayload(){    // TO-DO
-        return ipPkt;
+        return pkt;
     }
 
     public InetAddress getSourceAddress() throws UnknownHostException {
@@ -59,18 +59,18 @@ public class IPPktManager {
         return InetAddress.getByAddress(byteArray);
     }
 
-    private ByteBuffer getBytesFromPkt(int offset, int nCount){
+    public ByteBuffer getBytesFromPkt(int offset, int nCount){
 
         ByteBuffer ret = null;
         byte[] byteArray = new byte[nCount];
 
         try{
-            ipPkt.position(offset);
-            ipPkt.get(byteArray, 0, nCount);
-            ipPkt.rewind();
+            pkt.position(offset);
+            pkt.get(byteArray, 0, nCount);
+            pkt.rewind();
             ret.wrap(byteArray);
         } catch (IllegalArgumentException e){
-            //if(D) Log.e(TAG, "getBytesFromPkt: offset " + offset + " ipPkt.limit " + ipPkt.limit());
+            //if(D) Log.e(TAG, "getBytesFromPkt: offset " + offset + " pkt.limit " + pkt.limit());
             e.printStackTrace();
         } catch (IndexOutOfBoundsException e){
             e.printStackTrace();

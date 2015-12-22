@@ -10,6 +10,10 @@ public class PacketChecksum{
     int length;
     static long crc;
 
+    public PacketChecksum(ByteBuffer p) {
+        this.packet = p;
+    }
+
     public PacketChecksum(ByteBuffer p, int o, int l) {
         this.packet = p;
         this.offset = o;
