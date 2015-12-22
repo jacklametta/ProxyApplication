@@ -18,7 +18,7 @@ public class IPPktManager {
     static final int DEST_ADDR_OFFSET = 16;
     static final int PROTOCOL_OFFSET = 9;
     /* IP Header length */
-    int payloadOffset = 0;
+    int IHL = 0;
     /* Transport Protocol Types */
     static final int UDP = 17;
     static final int TCP = 6;
@@ -34,19 +34,15 @@ public class IPPktManager {
     public IPPktManager(ByteBuffer pkt) {
         this.pkt = pkt;
         transportProtocol = (int) pkt.get(PROTOCOL_OFFSET);
-        payloadOffset = ((int)(pkt.get(0) & 0x0f) * 4);
+        IHL = ((int)(pkt.get(0) & 0x0f) * 4);
     }
 
     public int getTransportProtocol(){
         return transportProtocol;
     }
 
-    public ByteBuffer getPayload() throws UnknownHostException {
-        return getBytesFromPkt(payloadOffset, pkt.limit() - payloadOffset );
-    }
-
-    public ByteBuffer getTransportPayload(){    // TO-DO
-        return pkt;
+    public ByteBuffer getPayload() {
+        return getBytesFromPkt(IHL, pkt.limit() - IHL );
     }
 
     public InetAddress getSourceAddress() throws UnknownHostException {
@@ -57,6 +53,13 @@ public class IPPktManager {
     public InetAddress getDestinationAddress() throws UnknownHostException {
         byte[] byteArray = getBytesFromPkt(DEST_ADDR_OFFSET, 4).array();
         return InetAddress.getByAddress(byteArray);
+    }
+
+    public ByteBuffer putBytesInPkt(byte[] src, int offset){
+
+        pkt.position(offset);
+        /////////////
+        return pkt;
     }
 
     public ByteBuffer getBytesFromPkt(int offset, int nCount){

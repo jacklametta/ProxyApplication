@@ -14,7 +14,7 @@ public class UDPPktManager extends IPPktManager {
     static final int LENGTH_OFFSET = 4;
 
     /* UDP Header length */
-    int payloadOffset = 0;
+    final int UHL = 8;
 
     public UDPPktManager(){
         super();
@@ -34,19 +34,19 @@ public class UDPPktManager extends IPPktManager {
     }
 
     public int getDestinationPort(){
-        return super.getBytesFromPkt(DEST_PORT_OFFSET, 4).getInt();
+        return getBytesFromPkt(IHL + DEST_PORT_OFFSET, 4).getInt();
     }
 
     public int getSourcePort(){
-        return super.getBytesFromPkt(SOURCE_PORT_OFFSET, 4).getInt();
+        return getBytesFromPkt(IHL + SOURCE_PORT_OFFSET, 4).getInt();
     }
 
-    public PacketChecksum getChecksum(){
-        return new PacketChecksum(getBytesFromPkt(CHECKSUM_OFFSET, 4));
+    public int getChecksum(){
+        return  getBytesFromPkt(IHL + CHECKSUM_OFFSET, 4).getInt();
     }
 
     public int getLength(){
-        return super.getBytesFromPkt(LENGTH_OFFSET, 4).getInt();
+        return getBytesFromPkt(IHL + LENGTH_OFFSET, 4).getInt();
     }
 
 }
