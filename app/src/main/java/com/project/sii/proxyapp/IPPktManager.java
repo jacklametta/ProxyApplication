@@ -24,7 +24,7 @@ public class IPPktManager {
     static final int TCP = 6;
     static final int ICMP = 1;
     /* IP Packet */
-    private ByteBuffer pkt;
+    protected ByteBuffer pkt;
     private int transportProtocol;
 
     public IPPktManager() {

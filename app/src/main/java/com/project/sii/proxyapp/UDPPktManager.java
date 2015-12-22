@@ -8,7 +8,6 @@ import java.nio.ByteBuffer;
 public class UDPPktManager extends IPPktManager {
 
     static final String TAG = "UDPPktManager";
-    private ByteBuffer udpPkt;
     static final int SOURCE_PORT_OFFSET = 0;
     static final int DEST_PORT_OFFSET = 2;
     static final int CHECKSUM_OFFSET = 6;
@@ -21,16 +20,18 @@ public class UDPPktManager extends IPPktManager {
         super();
     }
 
-    public UDPPktManager(ByteBuffer pkt){
+    public UDPPktManager(ByteBuffer UDPpkt){
         super();
-        this.udpPkt = pkt;
+        this.pkt = UDPpkt;
     }
 
-    /*private ByteBuffer UDPCreation(){
+    private void UDPCreation(){
 
-        reutrn
+    }
 
-    }*/
+    private void UDPExtract(){
+
+    }
 
     public int getDestinationPort(){
         return super.getBytesFromPkt(DEST_PORT_OFFSET, 4).getInt();
