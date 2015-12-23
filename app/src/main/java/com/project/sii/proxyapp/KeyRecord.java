@@ -1,7 +1,28 @@
 package com.project.sii.proxyapp;
 
-/**
- * Created by User on 17/12/2015.
- */
+import java.net.InetAddress;
+
 public class KeyRecord {
+    private int appPort;
+    private InetAddress serverIp;
+    private  int serverPort;
+
+    /* UDP KEY */
+    public KeyRecord(int app, InetAddress ip, int server)
+    {
+        this.appPort = app;
+        this.serverIp = ip;
+        this.serverPort = server;
+    }
+
+    /* TCP & ICMP KEY */
+    public KeyRecord()
+    {
+        // TO-DO
+    }
+
+
+    public int getAppPort(){ return this.appPort;}
+    public InetAddress getServerIp(){ return this.serverIp;}
+    public int getServerPort(){ return this.serverPort;}
 }
