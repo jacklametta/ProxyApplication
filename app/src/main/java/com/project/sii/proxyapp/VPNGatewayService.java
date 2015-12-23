@@ -113,7 +113,7 @@ public class VPNGatewayService extends Service {
      * @return      TTL of the record
      */
     private long getUdpTTL(KeyRecord key){
-        return (long)(((Pair) udpTable.get(key)).first);
+        return (long)(((Pair) udpTable.get(key)).second);
     }
 
 }
