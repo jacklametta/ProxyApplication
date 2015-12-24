@@ -1,5 +1,6 @@
 package com.project.sii.proxyapp;
 
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
 /**
@@ -25,8 +26,18 @@ public class UDPPktManager extends IPPktManager {
         this.pkt = UDPpkt;
     }
 
-    private void UDPCreation(){
+    private ByteBuffer UDPCreation(UDPPktManager pkt, int source, int destination){
+        int nCount = 4;
+        int i=0;
+        ByteBuffer ret = null;
+        if (source == 0)
+            nCount--;
+        byte[] byteArray = new byte[nCount];
+        /*for(int i=0; i<6;i=+2)
+        {
+        }*/
 
+        return ret;
     }
 
     private void UDPExtract(){
