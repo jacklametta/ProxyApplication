@@ -32,7 +32,6 @@ public class UDPPktManager extends IPPktManager {
         this.pkt = UDPpkt;
     }
 
-<<<<<<< Temporary merge branch 1
     private ByteBuffer UDPCreation(UDPPktManager pkt, int source, int destination){
         int nCount = 4;
         int i=0;
@@ -51,8 +50,6 @@ public class UDPPktManager extends IPPktManager {
 
     }
 
-=======
->>>>>>> Temporary merge branch 2
     public int getDestinationPort(){
         return getBytesFromPkt(IHL + DEST_PORT_OFFSET, 4).getInt();
     }

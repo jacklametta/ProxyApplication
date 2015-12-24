@@ -5,7 +5,7 @@ import java.nio.ByteOrder;
 /**
  * Created by User on 24/12/2015.
  */
-public class HeaderUDP {
+public class UDPHeader implements Header {
     /*
      *  0                              16                            31
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -40,7 +40,7 @@ public class HeaderUDP {
     private final short length;
     private final short checksum;
 
-    public HeaderUDP(byte[] rawData, int offset, int length){
+    public UDPHeader(byte[] rawData, int offset, int length){
         this.srcPort
                 = (int)(getShort(rawData, SOURCE_PORT_OFFSET + offset, ByteOrder.BIG_ENDIAN));
         this.dstPort
@@ -57,7 +57,7 @@ public class HeaderUDP {
         return this.dstPort;
     }
 
-    public short getLength() {
+    public long getLength() {
         return length;
     }
 
@@ -106,4 +106,8 @@ public class HeaderUDP {
         }
     }
 
+    @Override
+    public byte[] getRawData() {
+        return new byte[0];
+    }
 }
