@@ -5,9 +5,6 @@ import java.net.UnknownHostException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
-/**
- * Created by User on 17/12/2015.
- */
 public class IPPktManager {
 
     static final boolean D = true;
@@ -18,7 +15,7 @@ public class IPPktManager {
     static final int DEST_ADDR_OFFSET = 16;
     static final int PROTOCOL_OFFSET = 9;
     /* IP Header length */
-    int IHL = 0;
+    int IHL=0;
     /* Transport Protocol Types */
     static final int UDP = 17;
     static final int TCP = 6;
@@ -28,21 +25,21 @@ public class IPPktManager {
     private int transportProtocol;
 
     public IPPktManager() {
-        /* Inserire i campi che sono comuni con gli altri manager*/
+        /* TODO Inserire i campi che sono comuni con gli altri manager*/
     }
 
     public IPPktManager(ByteBuffer pkt) {
         this.pkt = pkt;
         transportProtocol = (int) pkt.get(PROTOCOL_OFFSET);
-        IHL = ((int)(pkt.get(0) & 0x0f) * 4);
+        IHL = (pkt.get(0) & 0x0f) * 4;
     }
 
     public int getTransportProtocol(){
         return transportProtocol;
-    }
+        }
 
     public ByteBuffer getPayload() {
-        return getBytesFromPkt(IHL, pkt.limit() - IHL );
+        return getBytesFromPkt(IHL, pkt.limit() - IHL);
     }
 
     public InetAddress getSourceAddress() throws UnknownHostException {
@@ -55,10 +52,25 @@ public class IPPktManager {
         return InetAddress.getByAddress(byteArray);
     }
 
-    public ByteBuffer putBytesInPkt(byte[] src, int offset){
+    public IPPktManager setSourceAddress(InetAddress addr){
+        // TODO setSourceAddress
+        return this;
+    }
 
-        pkt.position(offset);
-        /////////////
+    public IPPktManager setDestinationAddress(InetAddress addr){
+        // TODO setDestinationAddress
+        return this;
+    }
+
+    public ByteBuffer setBytesInPkt(byte[] src, int offset){
+
+        try {
+            pkt.position(offset);
+            pkt.put(src);
+            pkt.rewind();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         return pkt;
     }
 
@@ -71,13 +83,9 @@ public class IPPktManager {
             pkt.position(offset);
             pkt.get(byteArray, 0, nCount);
             pkt.rewind();
-            ret.wrap(byteArray);
-        } catch (IllegalArgumentException e){
+            ret = ByteBuffer.wrap(byteArray);
+        } catch (Exception e) {
             //if(D) Log.e(TAG, "getBytesFromPkt: offset " + offset + " pkt.limit " + pkt.limit());
-            e.printStackTrace();
-        } catch (IndexOutOfBoundsException e){
-            e.printStackTrace();
-        } catch (BufferUnderflowException e) {
             e.printStackTrace();
         }
         return ret;
