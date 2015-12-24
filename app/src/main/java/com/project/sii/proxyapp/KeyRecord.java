@@ -18,7 +18,7 @@ public class KeyRecord {
     /* TCP & ICMP KEY */
     public KeyRecord()
     {
-        // TO-DO
+        // TODO TCP e ICMP keyRecords
     }
 
 
