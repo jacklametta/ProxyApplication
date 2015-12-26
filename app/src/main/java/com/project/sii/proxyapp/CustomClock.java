@@ -2,28 +2,31 @@ package com.project.sii.proxyapp;
 
 import java.io.Serializable;
 import java.util.GregorianCalendar;
-
+/**
+ * The class is used for the creation of a clock
+ */
 public class CustomClock implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    private GregorianCalendar ora;
+    private GregorianCalendar calendar;
 
-    public CustomClock() {
-        ora = new GregorianCalendar();
-    }
+    public CustomClock()    {  calendar = new GregorianCalendar();  }
 
-    public int get_sec()   { return ora.get(ora.SECOND); }
-    public int get_min()   { return ora.get(ora.MINUTE); }
-    public int get_hour()  { return ora.get(ora.HOUR_OF_DAY); }
-    public int get_day()   { return ora.get(ora.DATE); }
-    public int get_month() { return ora.get(ora.MONTH)+1; }
-    public int get_year()  { return ora.get(ora.YEAR); }
+    public int get_sec()    { return calendar.get(calendar.SECOND); }
+    public int get_min()    { return calendar.get(calendar.MINUTE); }
+    public int get_hour()   { return calendar.get(calendar.HOUR_OF_DAY); }
+    public int get_day()    { return calendar.get(calendar.DATE); }
+    public int get_month()  { return calendar.get(calendar.MONTH)+1; }
+    public int get_year()   { return calendar.get(calendar.YEAR); }
 
+    /**
+     *  This function gets the actual time before converting it in hours, minutes,
+     *  seconds, days and months. Finally, it prints it as a String
+     *  @return  time converted as a String
+     */
     public String data()   {
-        aggiorna();
+        update();
         String hour, min, sec, day, month;
 
-        // Operatori ternari al fine di una miglior formattazione
         hour   = (get_hour()<10) ? "0"+get_hour() : ""+get_hour();
         min   = (get_min()<10)  ? "0"+get_min() : ""+get_min();
         sec   = (get_sec()<10)  ? "0"+get_sec() : ""+get_sec();
@@ -32,19 +35,9 @@ public class CustomClock implements Serializable {
 
         return hour + ":" + min +":" + sec +", " + day + "/" + month + "/" + get_year();
     }
-    public void aggiorna() { ora = new GregorianCalendar(); }
 
-    public static void main(String[] args) {
-        CustomClock clock = new CustomClock();
-
-        for(int i=0; i<120; i++) {
-            System.out.println("Log di ADESSO! :  "+clock.data());
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-    }
+    /**
+     *  The method gets the actual time
+     */
+    public void update()    { calendar = new GregorianCalendar(); }
 }
