@@ -7,15 +7,47 @@ import java.util.GregorianCalendar;
  */
 public class CustomClock implements Serializable {
 
+    /*  It provides the standard calendar system used by most of the world  */
     private GregorianCalendar calendar;
 
+    /*  Class Constructor   */
     public CustomClock()    {  calendar = new GregorianCalendar();  }
 
+    /**********  Get Functions   ***********/
+    /**
+     * The function gets the number of seconds
+     * @return  time seconds
+     */
     public int get_sec()    { return calendar.get(calendar.SECOND); }
+
+    /**
+     * The function gets the number of minuted
+     * @return  time minutes
+     */
     public int get_min()    { return calendar.get(calendar.MINUTE); }
+
+    /**
+     * The function gets the number of hours
+     * @return  time hours
+     */
     public int get_hour()   { return calendar.get(calendar.HOUR_OF_DAY); }
+
+    /**
+     * The function gets the number of days
+     * @return  time days
+     */
     public int get_day()    { return calendar.get(calendar.DATE); }
+
+    /**
+     * The function gets the number of months
+     * @return  time months
+     */
     public int get_month()  { return calendar.get(calendar.MONTH)+1; }
+
+    /**
+     * The function gets the number of years
+     * @return  time years
+     */
     public int get_year()   { return calendar.get(calendar.YEAR); }
 
     /**
