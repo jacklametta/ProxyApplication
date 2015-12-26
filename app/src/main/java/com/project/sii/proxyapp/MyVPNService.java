@@ -65,28 +65,60 @@ public class MyVPNService extends VpnService {
                      */
                     int timer = 0;
                     while (true) {
-                        // TO DO
-                        //  get packet with in
-                        //  put packet to tunnel
-                        //  get packet form tunnel
-                        //  return packet with out
-                        Log.d("MyVpnService", "OK\n");
-                        Thread.sleep(3000);
-                    }
-                } catch (Exception e) {
+                        boolean isFree = true;
+                        if ((timer = readFromInput(in, packet, tunnel, timer)) == 1)
+                            isFree = false;
+                        if ((timer = readFromOutput(out, packet, tunnel, timer)) == 0)
+                            isFree = false;
+
+                        // If we are idle or waiting for the network, sleep for a
+                        // fraction of time to avoid busy looping.
+                        if (isFree) {
+                            Thread.sleep(100);
+                            // Increase the timer. This is inaccurate but good enough,
+                            // since everything is operated in non-blocking mode.
+                            timer += (timer > 0) ? 100 : -100;
+                            // We are receiving for a long time but not sending.
+                            if (timer < -15000) {
+                                // Send empty control messages.
+                                packet.put((byte) 0).limit(1);
+                                for (int i = 0; i < 3; ++i) {
+                                    packet.position(0);
+                                    tunnel.write(packet);
+                                }
+                                packet.clear();
+                                // Switch to sending.
+                                timer = 1;
+                            }
+                            // We are sending for a long time but not receiving.
+                            if (timer > 20000) {
+                                throw new IllegalStateException("Timed out");
+                            }
+                        }
+
+                            // TO DO
+                            //  get packet with in
+                            //  put packet to tunnel
+                            //  get packet form tunnel
+                            //  return packet with out
+
+                            Log.d("MyVpnService", "OK\n");
+                        }
+                    } catch (InterruptedException e) {
                     e.printStackTrace();
-                } finally {
+                } catch (IOException e) {
+                    e.printStackTrace();
+            } finally {
                     try {
                         if (mInterface != null) {
                             mInterface.close();
                             mInterface = null;
                         }
-                    } catch (Exception e) {
-
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
             }
-
         }, "MyVpnRunnable");
 
         mThread.start();
@@ -94,14 +126,15 @@ public class MyVPNService extends VpnService {
     }
 
     /**
-     * This method reads the outgoing packet from the input stream.
+     * This function reads the outgoing packet from the input stream.
      * @param in        File input stream to read from
      * @param packet    bytebuffer used to read
      * @param tunnel    TUN to write to
      * @param timer     integer used for timing
      * @throws IOException  exception for reading from the input stream
+     * @return              1 if it is all ok, timer otherwise
      */
-    private void readOutPackets(FileInputStream in, ByteBuffer packet, DatagramChannel tunnel, int timer)
+    private int  readFromInput(FileInputStream in, ByteBuffer packet, DatagramChannel tunnel, int timer)
             throws IOException {
         int length = 0;
         length = in.read(packet.array());
@@ -111,20 +144,22 @@ public class MyVPNService extends VpnService {
             packet.clear();
             // If we were receiving, switch to sending.
             if (timer < 1) {
-                timer = 1;
+                return timer = 1;
             }
         }
+        return timer;
     }
 
     /**
-     * This method reads the ingoing packet from tunnel
-     * @param out       File output stream to write to
-     * @param packet    bytebuffer used to read
-     * @param tunnel    TUN to read from
-     * @param timer     integer used for timing
+     * This function reads the ingoing packet from tunnel.
+     * @param out           File output stream to write to
+     * @param packet        bytebuffer used to read
+     * @param tunnel        TUN to read from
+     * @param timer         integer used for timing
      * @throws IOException  exception for reading from the input stream
+     * @return              0 if it is all ok, timer otherwise
      */
-    private void readInPackets(FileOutputStream out, ByteBuffer packet, DatagramChannel tunnel, int timer)
+    private int readFromOutput(FileOutputStream out, ByteBuffer packet, DatagramChannel tunnel, int timer)
             throws IOException {
         int length = tunnel.read(packet);
         if (length > 0) {
@@ -134,9 +169,10 @@ public class MyVPNService extends VpnService {
             packet.clear();
             // If we were sending, switch to receiving.
             if (timer > 0) {
-                timer = 0;
+                return timer = 0;
             }
         }
+        return timer;
     }
 
     @Override
@@ -147,4 +183,5 @@ public class MyVPNService extends VpnService {
         Log.d("MyVpnService", "Destroy\n");
         super.onDestroy();
     }
+
 }
