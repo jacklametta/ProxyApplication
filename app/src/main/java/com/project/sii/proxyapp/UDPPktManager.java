@@ -32,18 +32,12 @@ public class UDPPktManager extends IPPktManager {
         this.pkt = UDPpkt;
     }
 
-    private ByteBuffer UDPCreation(UDPPktManager pkt, int source, int destination){
-        int nCount = 4;
-        int i=0;
-        ByteBuffer ret = null;
-        if (source == 0)
-            nCount--;
-        byte[] byteArray = new byte[nCount];
-        /*for(int i=0; i<6;i=+2)
-        {
-        }*/
-
-        return ret;
+    private void UDPCreation(UDPPktManager pkt, int source, int destination, int length){
+        if(source > 0)
+            pkt.setSourcePort(source);
+        pkt.setDestinationPort(destination);
+        pkt.setLength(length);
+        pkt.setChecksum();
     }
 
     private void UDPExtract(){
@@ -58,6 +52,7 @@ public class UDPPktManager extends IPPktManager {
         return getBytesFromPkt(IHL + SOURCE_PORT_OFFSET, 4).getInt();
     }
 
+    /*  CHECKSUM NON ERA LONG ? */
     public int getChecksum(){
         return  getBytesFromPkt(IHL + CHECKSUM_OFFSET, 4).getInt();
     }
