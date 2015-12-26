@@ -6,19 +6,24 @@ import java.io.IOException;
 import java.io.Serializable;
 
 /**
- * Created by User on 20/12/2015.
+ *  The class is used to create a Log of the overall application.
  */
 public class ConnectionLog implements Serializable {
 
+    /*  Instance of @see #CustomClock class  */
     private CustomClock customClock;
-    String to_log="";
 
-    public ConnectionLog() {
+    /*  String used to write in the log */
+    private String to_log="";
 
-        customClock = new CustomClock();
-    }
+    /*  Class Constructor   */
+    public ConnectionLog() {    customClock = new CustomClock();    }
 
-     public void doWrite(String input){
+    /**
+     * The method opens the txt file used for the log and writes on it
+     * @param input it's the string to write in the log
+     */
+    public void doWrite(String input){
         String path = "Ser/log.txt";
         FileWriter fw;
         try {
