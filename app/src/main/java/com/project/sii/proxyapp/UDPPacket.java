@@ -5,17 +5,37 @@ package com.project.sii.proxyapp;
  */
 public class UDPPacket implements Packet {
 
-    private final UDPHeader header;
+    /*private final UDPHeader header;
     private final Packet payload;
+*/
+    @Override
+    public Header getHeader() {
+        return null;
+    }
 
-    public static UdpPacket newPacket(
+    @Override
+    public Packet getPayload() {
+        return null;
+    }
+
+    @Override
+    public int length() {
+        return 0;
+    }
+
+    @Override
+    public byte[] getRawData() {
+        return new byte[0];
+    }
+/*
+    public static UDPPacket newPacket(
             byte[] rawData, int offset, int length
     ) throws IllegalRawDataException {
         ByteArrays.validateBounds(rawData, offset, length);
         return new UdpPacket(rawData, offset, length);
     }
 
-    private UdpPacket(byte[] rawData, int offset, int length) throws IllegalRawDataException {
+    private UDPPacket(byte[] rawData, int offset, int length) throws IllegalRawDataException {
         this.header = new UdpHeader(rawData, offset, length);
 
         int payloadLength = header.getLengthAsInt() - header.length();
@@ -85,6 +105,16 @@ public class UDPPacket implements Packet {
         return payload;
     }
 
+    @Override
+    public int length() {
+        return 0;
+    }
+
+    @Override
+    public byte[] getRawData() {
+        return new byte[0];
+    }
+
     /**
      *
      * checksum varification is necessary for IPv6(i.e. acceptZero must be false)
@@ -94,7 +124,7 @@ public class UDPPacket implements Packet {
      * @param acceptZero acceptZero
      * @return true if the packet represented by this object has a valid checksum;
      *         false otherwise.
-     */
+     *//*
     public boolean hasValidChecksum(
             InetAddress srcAddr, InetAddress dstAddr, boolean acceptZero
     ) {
@@ -130,5 +160,5 @@ public class UDPPacket implements Packet {
     public Builder getBuilder() {
         return new Builder(this);
     }
-
+*/
 }
