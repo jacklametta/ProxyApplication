@@ -23,10 +23,6 @@ public class UDPPktManager extends IPPktManager {
     /* UDP Header length */
     final int UHL = 8;
 
-    public UDPPktManager(){
-        super();
-    }
-
     public UDPPktManager(ByteBuffer UDPpkt){
         super(UDPpkt);
     }
