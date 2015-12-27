@@ -1,5 +1,6 @@
 package com.project.sii.proxyapp;
 
+import java.net.InetAddress;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
@@ -25,6 +26,15 @@ public class UDPPktManager extends IPPktManager {
 
     public UDPPktManager(ByteBuffer UDPpkt){
         super(UDPpkt);
+    }
+
+    public UDPPktManager(ByteBuffer payload, InetAddress sAddr, InetAddress dAddr, int sPort, int dPort){
+        super();
+        this.pkt = ByteBuffer.allocate(IHL + UHL + payload.limit());
+        setSourceAddress(sAddr).setDestinationAddress(dAddr);
+        setSourcePort(sPort).setDestinationPort(dPort).setPayload(payload);
+        setChecksum();
+        setLength(UHL + payload.limit());
     }
 
     private void UDPCreation(UDPPktManager pkt, int source, int destination, int length){
@@ -84,6 +94,11 @@ public class UDPPktManager extends IPPktManager {
         b.putInt(length);
         byte[] lengthBytes = b.array();
         setBytesInPkt(lengthBytes, IHL + LENGTH_OFFSET);
+        return this;
+    }
+
+    public UDPPktManager setPayload(ByteBuffer payload) {
+        setBytesInPkt(payload.array(), IHL + UHL);
         return this;
     }
 

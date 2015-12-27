@@ -15,7 +15,7 @@ public class IPPktManager {
     static final int DEST_ADDR_OFFSET = 16;
     static final int PROTOCOL_OFFSET = 9;
     /* IP Header length */
-    int IHL=0;
+    int IHL = 20;
     /* Transport Protocol Types */
     static final int UDP = 17;
     static final int TCP = 6;
@@ -23,6 +23,10 @@ public class IPPktManager {
     /* IP Packet */
     protected ByteBuffer pkt;
     private int transportProtocol;
+
+    public IPPktManager(){
+
+    }
 
     public IPPktManager(ByteBuffer pkt) {
         this.pkt = pkt;
@@ -37,6 +41,7 @@ public class IPPktManager {
     public ByteBuffer getPayload() {
         return getBytesFromPkt(IHL, pkt.limit() - IHL);
     }
+
 
     public InetAddress getSourceAddress() throws UnknownHostException {
         byte[] byteArray = getBytesFromPkt(SOURCE_ADDR_OFFSET, 4).array();
