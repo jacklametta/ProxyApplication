@@ -9,7 +9,9 @@ import android.util.Log;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 
@@ -182,6 +184,28 @@ public class MyVPNService extends VpnService {
         }
         Log.d("MyVpnService", "Destroy\n");
         super.onDestroy();
+    }
+
+    private void extractPacket(ByteBuffer packet) throws UnknownHostException {
+        IPPktManager ipPkt = new IPPktManager(packet);
+        InetAddress sourceAddress = ipPkt.getSourceAddress();
+        InetAddress destinationAddress = ipPkt.getDestinationAddress();
+        ByteBuffer payload = ipPkt.getPayload();
+        int protocol = ipPkt.getTransportProtocol();
+
+        // TO DO
+        switch(protocol){
+            case 17:
+                // UDP
+                break;
+            case 6:
+                // TCP
+                break;
+            case 1:
+                // ICMP
+                break;
+        }
+
     }
 
 }
