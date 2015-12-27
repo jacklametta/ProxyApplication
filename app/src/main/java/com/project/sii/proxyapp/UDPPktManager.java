@@ -28,8 +28,7 @@ public class UDPPktManager extends IPPktManager {
     }
 
     public UDPPktManager(ByteBuffer UDPpkt){
-        super();
-        this.pkt = UDPpkt;
+        super(UDPpkt);
     }
 
     private void UDPCreation(UDPPktManager pkt, int source, int destination, int length){
@@ -78,7 +77,7 @@ public class UDPPktManager extends IPPktManager {
     }
 
     public UDPPktManager setChecksum(){
-        ByteBuffer checksum = ByteBuffer.allocate(2);
+        ByteBuffer checksum = ByteBuffer.allocate(2); // TODO calcola checksum
         byte[] checkBytes = checksum.array();
         setBytesInPkt(checkBytes, IHL + CHECKSUM_OFFSET);
         return this;

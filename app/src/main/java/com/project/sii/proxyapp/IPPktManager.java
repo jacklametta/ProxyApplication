@@ -6,7 +6,7 @@ import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
 public class IPPktManager {
-
+    /** Da considerare ENDIANESS (per pkt dei protocolli di rete BIG_ENDIAN) */
     static final boolean D = true;
     static final String TAG = "pktManager";
 
@@ -23,10 +23,6 @@ public class IPPktManager {
     /* IP Packet */
     protected ByteBuffer pkt;
     private int transportProtocol;
-
-    public IPPktManager() {
-        /* TODO Inserire i campi che sono comuni con gli altri manager*/
-    }
 
     public IPPktManager(ByteBuffer pkt) {
         this.pkt = pkt;
@@ -53,12 +49,14 @@ public class IPPktManager {
     }
 
     public IPPktManager setSourceAddress(InetAddress addr){
-        // TODO setSourceAddress
+        byte[] address = addr.getAddress();
+        setBytesInPkt(address, SOURCE_ADDR_OFFSET);
         return this;
     }
 
     public IPPktManager setDestinationAddress(InetAddress addr){
-        // TODO setDestinationAddress
+        byte[] address = addr.getAddress();
+        setBytesInPkt(address, DEST_ADDR_OFFSET);
         return this;
     }
 
