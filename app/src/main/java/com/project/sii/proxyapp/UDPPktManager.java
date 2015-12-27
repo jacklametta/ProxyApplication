@@ -45,20 +45,20 @@ public class UDPPktManager extends IPPktManager {
     }
 
     public int getDestinationPort(){
-        return getBytesFromPkt(IHL + DEST_PORT_OFFSET, 4).getInt();
+        return getBytesFromPkt(IHL + DEST_PORT_OFFSET, 2).getInt();
     }
 
     public int getSourcePort(){
-        return getBytesFromPkt(IHL + SOURCE_PORT_OFFSET, 4).getInt();
+        return getBytesFromPkt(IHL + SOURCE_PORT_OFFSET, 2).getInt();
     }
 
-    /*  CHECKSUM NON ERA LONG ? */
+    /*  CHECKSUM NON ERA LONG ? */   // Sono due bytes, quindi direi di no
     public int getChecksum(){
-        return  getBytesFromPkt(IHL + CHECKSUM_OFFSET, 4).getInt();
+        return  getBytesFromPkt(IHL + CHECKSUM_OFFSET, 2).getInt();
     }
 
     public int getLength(){
-        return getBytesFromPkt(IHL + LENGTH_OFFSET, 4).getInt();
+        return getBytesFromPkt(IHL + LENGTH_OFFSET, 2).getInt();
     }
 
     public UDPPktManager setDestinationPort(int port){
