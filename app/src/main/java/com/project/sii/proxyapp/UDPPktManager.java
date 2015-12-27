@@ -37,6 +37,7 @@ public class UDPPktManager extends IPPktManager {
         setLength(UHL + payload.limit());
     }
 
+    /** Deprecated */
     private void UDPCreation(UDPPktManager pkt, int source, int destination, int length){
         if(source > 0)
             pkt.setSourcePort(source);
