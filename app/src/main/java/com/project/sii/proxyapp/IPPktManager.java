@@ -5,6 +5,22 @@ import java.net.UnknownHostException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
+/*  0                              16                            31
+     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     * |Version|  IHL  |Type of Service|           Total Length        |
+     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     * |         Identification        |Flags|      Fragment Offset    |
+     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     * |  Time to Live |    Protocol   |         Header Checksum       |
+     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     * |                       Source Address                          |
+     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     * |                    Destination Address                        |
+     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     * |                    Options                    |    Padding    |
+     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     */
+
 public class IPPktManager {
     /** Da considerare ENDIANESS (per pkt dei protocolli di rete BIG_ENDIAN) */
     static final boolean D = true;
@@ -24,14 +40,12 @@ public class IPPktManager {
     protected ByteBuffer pkt;
     private int transportProtocol;
 
-    public IPPktManager(){
-
-    }
+    public IPPktManager(){  }
 
     public IPPktManager(ByteBuffer pkt) {
         this.pkt = pkt;
         transportProtocol = (int) pkt.get(PROTOCOL_OFFSET);
-        IHL = (pkt.get(0) & 0x0f) * 4;
+        this.IHL = (pkt.get(0) & 0x0f) * 4;
     }
 
     public int getTransportProtocol(){
@@ -53,19 +67,19 @@ public class IPPktManager {
         return InetAddress.getByAddress(byteArray);
     }
 
-    public IPPktManager setSourceAddress(InetAddress addr){
+    private IPPktManager setSourceAddress(InetAddress addr){
         byte[] address = addr.getAddress();
         setBytesInPkt(address, SOURCE_ADDR_OFFSET);
         return this;
     }
 
-    public IPPktManager setDestinationAddress(InetAddress addr){
+    private IPPktManager setDestinationAddress(InetAddress addr){
         byte[] address = addr.getAddress();
         setBytesInPkt(address, DEST_ADDR_OFFSET);
         return this;
     }
 
-    public ByteBuffer setBytesInPkt(byte[] src, int offset){
+    private ByteBuffer setBytesInPkt(byte[] src, int offset){
 
         try {
             pkt.position(offset);
