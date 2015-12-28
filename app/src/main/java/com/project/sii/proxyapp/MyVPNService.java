@@ -192,6 +192,7 @@ public class MyVPNService extends VpnService {
         InetAddress destinationAddress = ipPkt.getDestinationAddress();
         ByteBuffer payload = ipPkt.getPayload();
         int protocol = ipPkt.getTransportProtocol();
+        long ttl = ipPkt.getTtl();
 
         // TO DO
         switch(protocol){

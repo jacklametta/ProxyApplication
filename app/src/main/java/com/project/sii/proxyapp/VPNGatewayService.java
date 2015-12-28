@@ -9,11 +9,23 @@ import android.util.Pair;
 import java.net.DatagramSocket;
 import java.util.Hashtable;
 
+/**
+ * The class provides a background service for several purpose:
+ *  -   Creation and Update of the log;
+ *  -   Hashtables management;
+ *  -   Multithread management;
+ */
 public class VPNGatewayService extends Service {
 
     private static String TAG = "VPNGatewayService";
+    /*  One hashtable for every managed transport protocol  */
     Hashtable udpTable, tcpTable, icmpTable;
 
+    /**
+     * TO DO
+     * @param intent    Received Intent from MainActivity
+     * @return          Nothing
+     */
     @Override
      public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
@@ -30,21 +42,36 @@ public class VPNGatewayService extends Service {
         icmpTable = new Hashtable();
     }
 
-    // It is used every time a client starts the service with startService() and
-    // service is already instantiated
-    @Override
+    /**
+     * The function is called when @see MainActivity starts the service who has been already
+     * created
+     * @param intent    Received Intent from MainActivity
+     * @param flags     arguments
+     * @param startId   token representing the MainAcitivty's start request
+     * @return          flag explicits if the service's killed before finishing, don't recreate it
+     */
+     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //TODO do something useful
         Log.d(TAG, "VPNGatewayService resumed");
         return Service.START_NOT_STICKY;
     }
 
+    /**
+     * The method is dalled by the system to notify Service is no longer used and is being removed
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "VPNGatewayService destroyed");
     }
 
+    /**
+     * The method inserts an UDP record in the hashtable
+     * @param key       key record
+     * @param gateway   socket
+     * @param ttl       time to live
+     */
     private void udpInsert(KeyRecord key, DatagramSocket gateway, long ttl) {
         Pair<DatagramSocket,Long> udpPair;
         udpTable.put(key, new Pair<DatagramSocket, Long>(gateway, ttl));
