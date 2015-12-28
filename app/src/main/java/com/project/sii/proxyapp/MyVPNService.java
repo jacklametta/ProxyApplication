@@ -98,7 +98,7 @@ public class MyVPNService extends VpnService {
                             }
                         }
 
-                            // TO DO
+                            // TODO rivedi gestione dei timer
                             //  get packet with in
                             //  put packet to tunnel
                             //  get packet form tunnel
@@ -138,6 +138,7 @@ public class MyVPNService extends VpnService {
      */
     private int  readFromInput(FileInputStream in, ByteBuffer packet, DatagramChannel tunnel, int timer)
             throws IOException {
+        // TODO rivedi
         int length = 0;
         length = in.read(packet.array());
         if (length > 0) {
@@ -163,6 +164,7 @@ public class MyVPNService extends VpnService {
      */
     private int readFromOutput(FileOutputStream out, ByteBuffer packet, DatagramChannel tunnel, int timer)
             throws IOException {
+        // TODO rivedi, basta packet.get(0) != 0? Che vordi' switch to receiving?
         int length = tunnel.read(packet);
         if (length > 0) {
             if (packet.get(0) != 0) {
@@ -193,15 +195,15 @@ public class MyVPNService extends VpnService {
         ByteBuffer payload = ipPkt.getPayload();
         int protocol = ipPkt.getTransportProtocol();
 
-        // TO DO
+        // TODO Pkt management
         switch(protocol){
-            case 17:
+            case IPPktManager.UDP:
                 // UDP
                 break;
-            case 6:
+            case IPPktManager.TCP:
                 // TCP
                 break;
-            case 1:
+            case IPPktManager.ICMP:
                 // ICMP
                 break;
         }
