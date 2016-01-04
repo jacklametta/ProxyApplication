@@ -67,19 +67,19 @@ public class IPPktManager {
         return InetAddress.getByAddress(byteArray);
     }
 
-    private IPPktManager setSourceAddress(InetAddress addr){
+    protected IPPktManager setSourceAddress(InetAddress addr){
         byte[] address = addr.getAddress();
         setBytesInPkt(address, SOURCE_ADDR_OFFSET);
         return this;
     }
 
-    private IPPktManager setDestinationAddress(InetAddress addr){
+    protected IPPktManager setDestinationAddress(InetAddress addr){
         byte[] address = addr.getAddress();
         setBytesInPkt(address, DEST_ADDR_OFFSET);
         return this;
     }
 
-    private ByteBuffer setBytesInPkt(byte[] src, int offset){
+    protected ByteBuffer setBytesInPkt(byte[] src, int offset){
 
         try {
             pkt.position(offset);
@@ -91,7 +91,7 @@ public class IPPktManager {
         return pkt;
     }
 
-    public ByteBuffer getBytesFromPkt(int offset, int nCount){
+    protected ByteBuffer getBytesFromPkt(int offset, int nCount){
 
         ByteBuffer ret = null;
         byte[] byteArray = new byte[nCount];
