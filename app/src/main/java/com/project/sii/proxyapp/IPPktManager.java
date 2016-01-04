@@ -52,10 +52,9 @@ public class IPPktManager {
         return transportProtocol;
         }
 
-    public ByteBuffer getPayload() {
-        return getBytesFromPkt(IHL, pkt.limit() - IHL);
-    }
+    public ByteBuffer getPayload() {    return getBytesFromPkt(IHL, pkt.limit() - IHL); }
 
+    public long getTtl() {  return getBytesFromPkt(8,9).getLong();  }
 
     public InetAddress getSourceAddress() throws UnknownHostException {
         byte[] byteArray = getBytesFromPkt(SOURCE_ADDR_OFFSET, 4).array();
@@ -107,4 +106,6 @@ public class IPPktManager {
         }
         return ret;
     }
+
+
 }

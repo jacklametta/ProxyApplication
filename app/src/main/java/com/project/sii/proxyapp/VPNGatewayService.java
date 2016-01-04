@@ -47,7 +47,7 @@ public class VPNGatewayService extends Service {
      * created
      * @param intent    Received Intent from MainActivity
      * @param flags     arguments
-     * @param startId   token representing the MainAcitivty's start request
+     * @param startId   token representing the MainActivity's start request
      * @return          flag explicits if the service's killed before finishing, don't recreate it
      */
      @Override
@@ -142,5 +142,7 @@ public class VPNGatewayService extends Service {
     private long getUdpTTL(KeyRecord key){
         return (long)(((Pair) udpTable.get(key)).second);
     }
+
+
 
 }
