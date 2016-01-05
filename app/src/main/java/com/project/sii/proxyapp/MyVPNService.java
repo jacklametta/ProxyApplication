@@ -218,7 +218,7 @@ public class MyVPNService extends VpnService {
         // TODO Pkt management
         switch(protocol){
             case IPPktManager.UDP:
-                // UDP
+
                 break;
             case IPPktManager.TCP:
                 // TCP

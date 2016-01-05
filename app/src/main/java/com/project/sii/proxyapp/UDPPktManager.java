@@ -32,6 +32,7 @@ public class UDPPktManager extends IPPktManager {
     public UDPPktManager(ByteBuffer UDPpkt){
         super(UDPpkt);
     }
+
     /*  Class Constructor when the packet's info are splitted   */
     public UDPPktManager(ByteBuffer payload, InetAddress sAddr, InetAddress dAddr, int sPort, int dPort){
         super();
