@@ -9,6 +9,8 @@ import android.util.Pair;
 import java.net.DatagramSocket;
 import java.util.Hashtable;
 
+// DEPRECATED
+
 /**
  * The class provides a background service for several purpose:
  *  -   Creation and Update of the log;
@@ -142,7 +144,5 @@ public class VPNGatewayService extends Service {
     private long getUdpTTL(KeyRecord key){
         return (long)(((Pair) udpTable.get(key)).second);
     }
-
-
 
 }
