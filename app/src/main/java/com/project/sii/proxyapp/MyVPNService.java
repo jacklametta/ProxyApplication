@@ -1,16 +1,19 @@
 package com.project.sii.proxyapp;
+
 import android.content.Intent;
 import android.net.VpnService;
-
+import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
-import android.os.Parcelable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-
+import java.nio.channels.DatagramChannel;
 
 /**
  *  This service allows to create a VPN if it doesn't exist one
@@ -41,19 +44,9 @@ public class MyVPNService extends VpnService {
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        builder.setSession("MyVPNService")
-                            .addAddress("192.168.0.1", 24)
-                            .addDnsServer("8.8.8.8")
-                            .addRoute("0.0.0.0", 0);
-        intent.putExtra("interface", (Parcelable) builder);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-        return START_STICKY;
-    }
-
-
-
-   /* @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+        mThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
                 try {
                     mInterface = builder.setSession("MyVPNService")
                             .addAddress("192.168.0.1", 24)
@@ -71,17 +64,14 @@ public class MyVPNService extends VpnService {
                     /*  It is used to determine the status of the tunnel:
                      *  -   positive value: sending;
                      *  -   otherwise: receiving;
-                     *//*
+                     */
                     int timer = 0;
                     while (true) {
                         boolean isFree = true;
-
-                        /*
                         if ((timer = readFromInput(in, packet, tunnel, timer)) == 1)
                             isFree = false;
                         if ((timer = readFromOutput(out, packet, tunnel, timer)) == 0)
                             isFree = false;
-
 
                         // If we are idle or waiting for the network, sleep for a
                         // fraction of time to avoid busy looping.
@@ -113,7 +103,7 @@ public class MyVPNService extends VpnService {
                             //  put packet to tunnel
                             //  get packet form tunnel
                             //  return packet with out
-/*
+
                             Log.d("MyVpnService", "OK\n");
                         }
                     } catch (InterruptedException e) {
@@ -130,8 +120,64 @@ public class MyVPNService extends VpnService {
                         e.printStackTrace();
                     }
                 }
+            }
+        }, "MyVpnRunnable");
+
+        mThread.start();
         return START_STICKY;
-    }*/
+    }
+
+    /**
+     * This function reads the outgoing packet from the input stream.
+     * @param in        File input stream to read from
+     * @param packet    bytebuffer used to read
+     * @param tunnel    TUN to write to
+     * @param timer     integer used for timing
+     * @throws IOException  exception for reading from the input stream
+     * @return              1 if it is all ok, timer otherwise
+     */
+    private int  readFromInput(FileInputStream in, ByteBuffer packet, DatagramChannel tunnel, int timer)
+            throws IOException {
+        // TODO rivedi
+        int length = 0;
+        length = in.read(packet.array());
+        if (length > 0) {
+            packet.limit(length);
+            tunnel.write(packet);
+            packet.clear();
+            // If we were receiving, switch to sending.
+            if (timer < 1) {
+                return timer = 1;
+            }
+        }
+        return timer;
+    }
+
+    /**
+     * This function reads the ingoing packet from tunnel.
+     * @param out           File output stream to write to
+     * @param packet        bytebuffer used to read
+     * @param tunnel        TUN to read from
+     * @param timer         integer used for timing
+     * @throws IOException  exception for reading from the input stream
+     * @return              0 if it is all ok, timer otherwise
+     */
+    private int readFromOutput(FileOutputStream out, ByteBuffer packet, DatagramChannel tunnel, int timer)
+            throws IOException {
+        // TODO rivedi, basta packet.get(0) != 0? Che vordi' switch to receiving?
+        int length = tunnel.read(packet);
+        if (length > 0) {
+            if (packet.get(0) != 0) {
+                out.write(packet.array(), 0, length);
+            }
+            packet.clear();
+            // If we were sending, switch to receiving.
+            if (timer > 0) {
+                return timer = 0;
+            }
+        }
+        return timer;
+    }
 
     @Override
     public void onDestroy(){
@@ -148,7 +194,6 @@ public class MyVPNService extends VpnService {
         InetAddress destinationAddress = ipPkt.getDestinationAddress();
         ByteBuffer payload = ipPkt.getPayload();
         int protocol = ipPkt.getTransportProtocol();
-        long ttl = ipPkt.getTtl();
 
         // TODO Pkt management
         switch(protocol){
