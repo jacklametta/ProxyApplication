@@ -65,6 +65,8 @@ public class MyVPNService extends VpnService {
                      *  -   positive value: sending;
                      *  -   otherwise: receiving;
                      */
+
+                    // Timer da leva', non serve...
                     int timer = 0;
                     while (true) {
                         boolean isFree = true;
@@ -140,7 +142,7 @@ public class MyVPNService extends VpnService {
             throws IOException {
         // TODO rivedi
         int length = 0;
-        length = in.read(packet.array());
+        length = in.read(packet.array()); // ByteBuffer.array() restituisce un final byte[] array ... che hanno fatto?
         if (length > 0) {
             packet.limit(length);
             tunnel.write(packet);
