@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.VpnService;
 import android.os.ParcelFileDescriptor;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -12,8 +11,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.content.Intent;
-import android.net.VpnService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,8 +19,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /*
         LocalBroadcastManager.getInstance(this).registerReceiver(
-                mMessageReceiver, new IntentFilter("speedExceeded"));
+                mMessageReceiver, new IntentFilter("speedExceeded"));*/
 
         setContentView(R.layout.activity_main);
     }
@@ -37,14 +35,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void startClicked(View v)
     {
-        startService(new Intent(this, VPNGatewayService.class));
         startService(new Intent(this, MyVPNService.class));
     }
 
     public void stopClicked(View v)
     {
         stopService(new Intent(this, MyVPNService.class));
-        stopService(new Intent(this, VPNGatewayService.class));
     }
 
     @Override
@@ -62,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /*
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -69,5 +66,5 @@ public class MainActivity extends AppCompatActivity {
             //mInterface = (ParcelFileDescriptor)intent.getExtra("interface").establish();
             //  ... react to local broadcast message
         }
-    };
+    };*/
 }
