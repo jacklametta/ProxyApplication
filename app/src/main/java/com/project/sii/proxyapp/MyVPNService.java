@@ -79,7 +79,7 @@ public class MyVPNService extends VpnService {
                     DatagramChannel tunnel = DatagramChannel.open();
                     tunnel.connect(new InetSocketAddress("127.0.0.1", 8087));
                     protect(tunnel.socket());
-
+                    // ciao
                     ByteBuffer packet = ByteBuffer.allocate(32767);
                     /*  It is used to determine the status of the tunnel:
                      *  -   positive value: sending;
