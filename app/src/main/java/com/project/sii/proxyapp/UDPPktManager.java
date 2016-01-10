@@ -38,7 +38,8 @@ public class UDPPktManager extends IPPktManager {
         super();
         this.pkt = ByteBuffer.allocate(IHL + UHL + payload.limit());
         setSourceAddress(sAddr).setDestinationAddress(dAddr);
-        setSourcePort(sPort).setDestinationPort(dPort).setPayload(payload);
+        setSourcePort(sPort).setDestinationPort(dPort);
+        setPayload(payload);
         setChecksum();
         setLength(UHL + payload.limit());
     }
@@ -60,35 +61,45 @@ public class UDPPktManager extends IPPktManager {
      * The function returns the destination port
      * @return  destination port
      */
-    public int getDestinationPort() {   return getBytesFromPkt(IHL + DEST_PORT_OFFSET, 2).getInt(); }
+    public int getDestinationPort() {   return getUnsignedShort(getBytesFromPkt(IHL + DEST_PORT_OFFSET, 2).getShort()); }
 
     /**
      * The function returns the source port
      * @return  source port
      */
-    public int getSourcePort()  { return getBytesFromPkt(IHL + SOURCE_PORT_OFFSET, 2).getInt(); }
+    public int getSourcePort()  { return getUnsignedShort(getBytesFromPkt(IHL + SOURCE_PORT_OFFSET, 2).getShort()); }
 
     /*  CHECKSUM NON ERA LONG ? */   // Sono due bytes, quindi direi di no
     public int getChecksum(){
-        return  getBytesFromPkt(IHL + CHECKSUM_OFFSET, 2).getInt();
+        return  getUnsignedShort(getBytesFromPkt(IHL + CHECKSUM_OFFSET, 2).getShort());
     }
 
     /**
      * The function returns the length of the packet
      * @return  packet's length
      */
-    public int getLength()  {   return getBytesFromPkt(IHL + LENGTH_OFFSET, 2).getInt();    }
+    public int getLength()  {   return getUnsignedShort(getBytesFromPkt(IHL + LENGTH_OFFSET, 2).getShort());    }
+
+    /**
+     * The function sets the int value val in the short field at the specified offset in packet
+     * @param val  value to write on the packet
+     * @param offset  offset to write on the packet to
+     */
+    public void setHeaderValue(int val, int offset){
+        ByteBuffer b = ByteBuffer.allocate(Short.SIZE); /* The initial order of a byte buffer is always BIG_ENDIAN. */
+        b.putShort((short) val);
+        byte[] portBytes = b.array();
+        setBytesInPkt(portBytes, IHL + offset);
+    }
 
     /**
      * The function sets the destination port of the packet and returns the packet itself.
      * @param port  destination port to write on the packet
      * @return      packet
      */
-    public UDPPktManager setDestinationPort(int port){
-        ByteBuffer b = ByteBuffer.allocate(Integer.SIZE); /* The initial order of a byte buffer is always BIG_ENDIAN. */
-        b.putInt(port);
-        byte[] portBytes = b.array();
-        setBytesInPkt(portBytes, IHL + DEST_PORT_OFFSET);
+    public UDPPktManager setDestinationPort(int port) throws  IllegalArgumentException{
+        if (port < 0 || port > 65535) throw new IllegalArgumentException(port + " value invalid as port number");
+        setHeaderValue(port, DEST_PORT_OFFSET);
         return this;
     }
 
@@ -98,10 +109,8 @@ public class UDPPktManager extends IPPktManager {
      * @return      packet
      */
     public UDPPktManager setSourcePort(int port){
-        ByteBuffer b = ByteBuffer.allocate(Integer.SIZE); /* The initial order of a byte buffer is always BIG_ENDIAN. */
-        b.putInt(port);
-        byte[] portBytes = b.array();
-        setBytesInPkt(portBytes, IHL + SOURCE_PORT_OFFSET);
+        if (port < 0 || port > 65535) throw new IllegalArgumentException(port + " value invalid as port number");
+        setHeaderValue(port, SOURCE_PORT_OFFSET);
         return this;
     }
 
@@ -122,10 +131,7 @@ public class UDPPktManager extends IPPktManager {
      * @return        packet
      */
     public UDPPktManager setLength(int length){
-        ByteBuffer b = ByteBuffer.allocate(Integer.SIZE); /* The initial order of a byte buffer is always BIG_ENDIAN. */
-        b.putInt(length);
-        byte[] lengthBytes = b.array();
-        setBytesInPkt(lengthBytes, IHL + LENGTH_OFFSET);
+        setHeaderValue(length, LENGTH_OFFSET);
         return this;
     }
 
