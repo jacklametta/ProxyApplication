@@ -112,4 +112,16 @@ public class IPPktManager {
         return value & 0xFFFF;
     }
 
+    @Override
+    public String toString(){
+        final StringBuilder sb = new StringBuilder("IPPktManager {");
+        try {
+            sb.append("Transport Protocol: ").append(getTransportProtocol() == UDP ? "UDP" : "TCP").append(", ");
+            sb.append("SourceAddr: ").append(getSourceAddress().getHostAddress()).append(", ");
+            sb.append("DestAddr: ").append(getDestinationAddress().getHostAddress()).append("}\n");
+        } catch (UnknownHostException e){
+            e.printStackTrace();
+        }
+        return sb.toString();
+    }
 }

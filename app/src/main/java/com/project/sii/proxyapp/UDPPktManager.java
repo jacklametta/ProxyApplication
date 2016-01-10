@@ -145,4 +145,14 @@ public class UDPPktManager extends IPPktManager {
         return this;
     }
 
+    @Override
+    public String toString(){
+        final StringBuilder sb = new StringBuilder("UDPktManager {");
+        sb.append("SourcePort: ").append(getSourcePort()).append(", ");
+        sb.append("DestPort: ").append(getDestinationPort()).append(", ");
+        sb.append("Length: ").append(getLength()).append(", ");
+        sb.append("Checksum: ").append(getChecksum()).append("}");
+        return sb.toString();
+    }
+
 }
