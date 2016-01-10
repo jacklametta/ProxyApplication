@@ -79,59 +79,28 @@ public class MyVPNService extends VpnService {
                     DatagramChannel tunnel = DatagramChannel.open();
                     tunnel.connect(new InetSocketAddress("127.0.0.1", 8087));
                     protect(tunnel.socket());
-                    // ciao
                     ByteBuffer packet = ByteBuffer.allocate(32767);
                     /*  It is used to determine the status of the tunnel:
                      *  -   positive value: sending;
                      *  -   otherwise: receiving;
                      */
-                    int timer = 0;
                     while (true) {
-                        boolean isFree = true;
-                        if ((timer = readFromInput(in, packet, tunnel, timer)) == 1)
-                            isFree = false;
-                        if ((timer = readFromOutput(out, packet, tunnel, timer)) == 0)
-                            isFree = false;
 
-                        // If we are idle or waiting for the network, sleep for a
-                        // fraction of time to avoid busy looping.
-                        if (isFree) {
-                            Thread.sleep(100);
-                            // Increase the timer. This is inaccurate but good enough,
-                            // since everything is operated in non-blocking mode.
-                            timer += (timer > 0) ? 100 : -100;
-                            // We are receiving for a long time but not sending.
-                            if (timer < -15000) {
-                                // Send empty control messages.
-                                packet.put((byte) 0).limit(1);
-                                for (int i = 0; i < 3; ++i) {
-                                    packet.position(0);
-                                    tunnel.write(packet);
-                                }
-                                packet.clear();
-                                // Switch to sending.
-                                timer = 1;
-                            }
-                            // We are sending for a long time but not receiving.
-                            if (timer > 20000) {
-                                throw new IllegalStateException("Timed out");
-                            }
                         }
 
-                            // TODO rivedi gestione dei timer
+                            // TODO TUZZIA
                             //  get packet with in
                             //  put packet to tunnel
                             //  get packet form tunnel
                             //  return packet with out
 
-                            Log.d("MyVpnService", "OK\n");
-                        }
-                    } catch (InterruptedException e) {
+
+
+            } catch (IOException e) {
                     e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-            } finally {
+                } finally {
                     try {
+                        Log.d("MyVpnService", "OK\n");
                         if (mInterface != null) {
                             mInterface.close();
                             mInterface = null;
@@ -152,11 +121,10 @@ public class MyVPNService extends VpnService {
      * @param in        File input stream to read from
      * @param packet    bytebuffer used to read
      * @param tunnel    TUN to write to
-     * @param timer     integer used for timing
      * @throws IOException  exception for reading from the input stream
      * @return              1 if it is all ok, timer otherwise
      */
-    private int  readFromInput(FileInputStream in, ByteBuffer packet, DatagramChannel tunnel, int timer)
+    private int  readFromInput(FileInputStream in, ByteBuffer packet, DatagramChannel tunnel)
             throws IOException {
         // TODO rivedi
         int length = 0;
@@ -165,12 +133,8 @@ public class MyVPNService extends VpnService {
             packet.limit(length);
             tunnel.write(packet);
             packet.clear();
-            // If we were receiving, switch to sending.
-            if (timer < 1) {
-                return timer = 1;
-            }
         }
-        return timer;
+        return 0;
     }
 
     /**
@@ -178,11 +142,10 @@ public class MyVPNService extends VpnService {
      * @param out           File output stream to write to
      * @param packet        bytebuffer used to read
      * @param tunnel        TUN to read from
-     * @param timer         integer used for timing
      * @throws IOException  exception for reading from the input stream
      * @return              0 if it is all ok, timer otherwise
      */
-    private int readFromOutput(FileOutputStream out, ByteBuffer packet, DatagramChannel tunnel, int timer)
+    private int readFromOutput(FileOutputStream out, ByteBuffer packet, DatagramChannel tunnel)
             throws IOException {
         // TODO rivedi, basta packet.get(0) != 0? Che vordi' switch to receiving?
         int length = tunnel.read(packet);
@@ -191,12 +154,8 @@ public class MyVPNService extends VpnService {
                 out.write(packet.array(), 0, length);
             }
             packet.clear();
-            // If we were sending, switch to receiving.
-            if (timer > 0) {
-                return timer = 0;
-            }
         }
-        return timer;
+        return 0;
     }
 
     @Override
@@ -229,82 +188,4 @@ public class MyVPNService extends VpnService {
         }
 
     }
-
-    /**
-     * The method inserts an UDP record in the hashtable
-     * @param key       key record
-     * @param gateway   socket
-     * @param ttl       time to live
-     */
-    private void udpInsert(KeyRecord key, DatagramSocket gateway, long ttl) {
-        Pair<DatagramSocket,Long> udpPair;
-        udpTable.put(key, new Pair<DatagramSocket, Long>(gateway, ttl));
-    }
-
-    /**
-     * The method removes the UDP record based on the value of the key
-     * @param key   Key of the record
-     */
-    private void udpDelete(KeyRecord key){
-        udpTable.remove(key);
-    }
-
-    /**
-     * The method removes the TCP record based on the value of the key
-     * @param key   Key of the record
-     */
-    private void tcpDelete(KeyRecord key){
-        tcpTable.remove(key);
-    }
-
-    /**
-     * The method removes the ICMP record based on the value of the key
-     * @param key   Key of the record
-     */
-    private void icmpDelete(KeyRecord key){
-        icmpTable.remove(key);
-    }
-
-    /**
-     * The function returns the table who contains UDP Records
-     * @return  UDP Records Hashtable
-     */
-    private Hashtable getUdpTable(){
-        return udpTable;
-    }
-
-    /**
-     * The function returns the table who contains TCP Records
-     * @return  TCP Records Hashtable
-     */
-    private Hashtable getTcpTable(){
-        return tcpTable;
-    }
-
-    /**
-     * The function returns the table who contains ICMP Records
-     * @return  ICMP Records Hashtable
-     */
-    private Hashtable getIcmpTable(){
-        return icmpTable;
-    }
-
-    /**
-     * The function returns the Gateway Socket of the record
-     * @param key   Key of the record
-     * @return      DatagramSocket of the record
-     */
-    private DatagramSocket getUdpDestination(KeyRecord key){
-        return (DatagramSocket)(((Pair) udpTable.get(key)).first);
-    }
-
-    /**
-     * The function returns the TTL of the record
-     * @param key   Key of the record
-     * @return      TTL of the record
-     */
-    private long getUdpTTL(KeyRecord key){
-        return (long)(((Pair) udpTable.get(key)).second);
-    }
-
 }
