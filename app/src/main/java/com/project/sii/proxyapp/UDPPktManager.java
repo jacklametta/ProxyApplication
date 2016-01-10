@@ -151,7 +151,8 @@ public class UDPPktManager extends IPPktManager {
         sb.append("SourcePort: ").append(getSourcePort()).append(", ");
         sb.append("DestPort: ").append(getDestinationPort()).append(", ");
         sb.append("Length: ").append(getLength()).append(", ");
-        sb.append("Checksum: ").append(getChecksum()).append("}");
+        sb.append("Checksum: ").append(getChecksum()).append("}\n");
+        sb.append(super.toString());
         return sb.toString();
     }
 
